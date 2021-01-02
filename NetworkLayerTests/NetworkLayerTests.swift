@@ -32,11 +32,12 @@ class URLSessionHttpClientTests: XCTestCase {
     func test_getFromURL_performsGetRequestWithURL() {
 
         let exp = expectation(description: "Wait get completion")
+        let url = anyURL()
 
-        makeSUT().get(from: URL(string: "https://any-url.com")!)
+        makeSUT().get(from: url)
 
         URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, URL(string: "https://any-url.com")!)
+            XCTAssertEqual(request.url, url)
             XCTAssertEqual(request.httpMethod, "GET")
             exp.fulfill()
         }
@@ -47,6 +48,10 @@ class URLSessionHttpClientTests: XCTestCase {
     // MARK: - Helpers
     private func makeSUT() -> URLSessionHttpClient {
         return URLSessionHttpClient()
+    }
+
+    private func anyURL() -> URL {
+        return URL(string: "https://any-url.com")!
     }
 
     class URLProtocolStub: URLProtocol {
