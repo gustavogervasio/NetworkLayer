@@ -9,15 +9,16 @@ class URLSessionHttpClient {
         self.session = session
     }
 
-    struct UnexpectedValuesRepresentation :Error {}
+    struct UnexpectedValuesRepresentation: Error {}
 
     func get(from url: URL, completion: @escaping (Error?) -> Void) {
 
-        session.dataTask(with: url) { (_, response, error) in
+        session.dataTask(with: url) { (data, response, error) in
 
             if let error = error {
                 completion(error)
-            } else if let response = response as? HTTPURLResponse {
+            } else if let response = response as? HTTPURLResponse, let data = data {
+                completion(nil)
             } else {
                 completion(UnexpectedValuesRepresentation())
             }
@@ -27,7 +28,6 @@ class URLSessionHttpClient {
 
 
 class URLSessionHttpClientTests: XCTestCase {
-
 
     override func setUp() {
         super.setUp()
@@ -76,6 +76,11 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: anyNSError()))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHttpURLResponse(), error: anyNSError()))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: nil))
+    }
+
+    func test_getFromURL_succeedsOnHTTPURLResponseWithData() {
+
+        XCTAssertNil(resultErrorFor(data: anyData(), response: anyHttpURLResponse(), error: nil))
     }
 
     // MARK: - Helpers
