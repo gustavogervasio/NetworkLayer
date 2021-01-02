@@ -3,24 +3,28 @@ import XCTest
 
 class URLSessionHttpClient {
 
-    private let session: URLSession
+    struct UnexpectedValuesRepresentation: Error {}
 
+    enum Result {
+        case failure(Error)
+        case success(Data, HTTPURLResponse)
+    }
+
+    private let session: URLSession
     init(session: URLSession = .shared) {
         self.session = session
     }
 
-    struct UnexpectedValuesRepresentation: Error {}
-
-    func get(from url: URL, completion: @escaping (Error?) -> Void) {
+    func get(from url: URL, completion: @escaping (URLSessionHttpClient.Result) -> Void) {
 
         session.dataTask(with: url) { (data, response, error) in
 
             if let error = error {
-                completion(error)
-            } else if let response = response as? HTTPURLResponse, let data = data {
-                completion(nil)
+                completion(.failure(error))
+            } else if let data = data, let response = response as? HTTPURLResponse {
+                completion(.success(data, response))
             } else {
-                completion(UnexpectedValuesRepresentation())
+                completion(.failure(UnexpectedValuesRepresentation()))
             }
         }.resume()
     }
@@ -114,16 +118,21 @@ class URLSessionHttpClientTests: XCTestCase {
 
         URLProtocolStub.stub(data: data, response: response, error: error)
 
-        var receivedError: Error? = nil
+        var receivedResult: URLSessionHttpClient.Result? = nil
 
         makeSUT().get(from: anyURL()) { result in
-            receivedError = result
+            receivedResult = result
             exp.fulfill()
         }
 
         wait(for: [exp], timeout: 1.0)
 
-        return receivedError
+        switch receivedResult {
+        case let .failure(error):
+            return error
+        default:
+            return nil
+        }
     }
 
     class URLProtocolStub: URLProtocol {
