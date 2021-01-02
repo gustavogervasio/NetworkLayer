@@ -9,9 +9,11 @@ class URLSessionHttpClient {
         self.session = session
     }
 
-    func get(from url: URL) {
+    func get(from url: URL, completion: @escaping (Error?) -> Void) {
 
-        session.dataTask(with: url) { (_, _, _) in }.resume()
+        session.dataTask(with: url) { (_, _, error) in
+            completion(error)
+        }.resume()
     }
 }
 
@@ -34,7 +36,7 @@ class URLSessionHttpClientTests: XCTestCase {
         let exp = expectation(description: "Wait get completion")
         let url = anyURL()
 
-        makeSUT().get(from: url)
+        makeSUT().get(from: url) { _ in }
 
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, url)
@@ -43,6 +45,26 @@ class URLSessionHttpClientTests: XCTestCase {
         }
 
         wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_getFromURL_failsOnRequestError() {
+
+        let exp = expectation(description: "Wait get completion")
+        let url = anyURL()
+        let expectedError = NSError(domain: "test", code: 1)
+        URLProtocolStub.stub(error: expectedError)
+
+        var receivedError: Error? = nil
+
+        makeSUT().get(from: url) { result in
+            receivedError = result
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1.0)
+
+        XCTAssertEqual((receivedError as NSError?)?.code, expectedError.code)
+        XCTAssertEqual((receivedError as NSError?)?.domain, expectedError.domain)
     }
 
     // MARK: - Helpers
@@ -56,7 +78,12 @@ class URLSessionHttpClientTests: XCTestCase {
 
     class URLProtocolStub: URLProtocol {
 
+        private static var stub: Stub?
         private static var requestObserver: ((URLRequest) -> Void)?
+
+        private struct Stub {
+            let error: Error?
+        }
 
         static func startInterceptingRequests() {
             URLProtocol.registerClass(URLProtocolStub.self)
@@ -65,6 +92,10 @@ class URLSessionHttpClientTests: XCTestCase {
         static func stopInterceptingRequests() {
             URLProtocol.unregisterClass(URLProtocolStub.self)
             URLProtocolStub.requestObserver = nil
+        }
+
+        static func stub(error: Error?) {
+            stub = Stub(error: error)
         }
 
         static func observeRequests(observer: @escaping (URLRequest) -> Void) {
@@ -84,6 +115,10 @@ class URLSessionHttpClientTests: XCTestCase {
             if let requestObserver = URLProtocolStub.requestObserver {
                 client?.urlProtocolDidFinishLoading(self)
                 return requestObserver(request)
+            }
+
+            if let error = URLProtocolStub.stub?.error {
+                client?.urlProtocol(self, didFailWithError: error)
             }
 
             client?.urlProtocolDidFinishLoading(self)
