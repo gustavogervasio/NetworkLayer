@@ -44,7 +44,6 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_getFromURL_performsGetRequestWithURL() {
-
         let exp = expectation(description: "Wait get completion")
         let url = anyURL()
 
@@ -60,7 +59,6 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_getFromURL_failsOnRequestError() {
-
         let expectedError = anyNSError()
 
         let result = resultErrorFor(data: nil, response: nil, error: expectedError)
@@ -70,7 +68,6 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_getFromURL_failsOnAllInvalidRepresentationCases() {
-
         XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
         XCTAssertNotNil(resultErrorFor(data: nil, response: nonHttpURLResponse(), error: nil))
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
@@ -83,8 +80,26 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_getFromURL_succeedsOnHTTPURLResponseWithData() {
+        let data = anyData()
+        let response = anyHttpURLResponse()
 
-        XCTAssertNil(resultErrorFor(data: anyData(), response: anyHttpURLResponse(), error: nil))
+        let result = resultValuesFor(data: data, response: response, error: nil)
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.data, data)
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
+    }
+
+    func test_getFromURL_suceedsWithEmptyDataOnHttpURLResponseWithNilData() {
+        let response = anyHttpURLResponse()
+
+        let result = resultValuesFor(data: nil, response: anyHttpURLResponse(), error: nil)
+
+        let emptyData = Data()
+        XCTAssertEqual(result?.data, emptyData)
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
     }
 
     // MARK: - Helpers
@@ -130,6 +145,29 @@ class URLSessionHttpClientTests: XCTestCase {
         switch receivedResult {
         case let .failure(error):
             return error
+        default:
+            return nil
+        }
+    }
+
+    private func resultValuesFor(data: Data?, response: URLResponse?, error: NSError?) -> (data: Data, response: HTTPURLResponse)? {
+
+        let exp = expectation(description: "Wait get completion")
+
+        URLProtocolStub.stub(data: data, response: response, error: error)
+
+        var receivedResult: URLSessionHttpClient.Result? = nil
+
+        makeSUT().get(from: anyURL()) { result in
+            receivedResult = result
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 1.0)
+
+        switch receivedResult {
+        case let .success(data, response):
+            return (data, response)
         default:
             return nil
         }
