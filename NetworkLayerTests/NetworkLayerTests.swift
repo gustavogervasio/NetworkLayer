@@ -18,20 +18,28 @@ class URLSessionHttpClient {
 
 class URLSessionHttpClientTests: XCTestCase {
 
+
+    override func setUp() {
+        super.setUp()
+        URLProtocolStub.startInterceptingRequests()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        URLProtocolStub.stopInterceptingRequests()
+    }
+
     func test_getFromURL_performsGetRequestWithURL() {
 
         let exp = expectation(description: "Wait get completion")
-        URLProtocolStub.startInterceptingRequests()
 
-        let sut = makeSUT()
+        makeSUT().get(from: URL(string: "https://any-url.com")!)
 
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, URL(string: "https://any-url.com")!)
             XCTAssertEqual(request.httpMethod, "GET")
             exp.fulfill()
         }
-
-        sut.get(from: URL(string: "https://any-url.com")!)
 
         wait(for: [exp], timeout: 1.0)
     }
