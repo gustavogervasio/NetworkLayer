@@ -51,7 +51,7 @@ class URLSessionHttpClientTests: XCTestCase {
 
         let exp = expectation(description: "Wait get completion")
         let url = anyURL()
-        let expectedError = NSError(domain: "test", code: 1)
+        let expectedError = anyNSError()
         URLProtocolStub.stub(error: expectedError)
 
         var receivedError: Error? = nil
@@ -74,6 +74,10 @@ class URLSessionHttpClientTests: XCTestCase {
 
     private func anyURL() -> URL {
         return URL(string: "https://any-url.com")!
+    }
+
+    private func anyNSError() -> NSError {
+        return NSError(domain: "test", code: 1)
     }
 
     class URLProtocolStub: URLProtocol {
