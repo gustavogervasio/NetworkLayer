@@ -8,6 +8,7 @@ enum Method {
 protocol Target {
     var baseURL: URL { get }
     var method: Method { get }
+    var path: String { get }
 }
 
 class Provider {
@@ -24,7 +25,7 @@ class Provider {
 
     // MARK: - Private Methods
     private func get(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
-        client.get(from: target.baseURL) { result in
+        client.get(from: target.baseURL.appendingPathComponent(target.path)) { result in
             completion(result)
         }
     }
@@ -36,11 +37,12 @@ class TargetProviderTests: XCTestCase {
 
         let target = TargetSpy()
         let (sut, client) = makeSUT()
+        let requestedURL = target.baseURL.appendingPathComponent(target.path)
 
         sut.request(from: target) { _ in }
 
         XCTAssertEqual(client.messages.count, 1)
-        XCTAssertEqual(client.messages.first?.url, target.baseURL)
+        XCTAssertEqual(client.messages.first?.url, requestedURL)
         XCTAssertEqual(client.messages.first?.method, .get)
     }
 
@@ -107,8 +109,17 @@ class TargetProviderTests: XCTestCase {
     }
 
     private struct TargetSpy: Target {
-        var baseURL: URL { return URL(string: "https://any-url.com")! }
-        var method: Method { return .get }
+        var baseURL: URL {
+            return URL(string: "https://any-url.com")!
+        }
+
+        var method: Method {
+            return .get
+        }
+
+        var path: String {
+            return "any-path"
+        }
     }
 
     private class URLSessionHttpClientSpy: HTTPClient {
