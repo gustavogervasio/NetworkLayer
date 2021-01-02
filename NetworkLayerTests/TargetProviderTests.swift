@@ -1,5 +1,5 @@
-import Foundation
 import XCTest
+@testable import NetworkLayer
 
 protocol NetworkTarget {
     var baseURL: URL { get }

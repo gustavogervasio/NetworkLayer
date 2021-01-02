@@ -11,6 +11,8 @@
 		1C6F876B25A0E240000D481B /* NetworkLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F876A25A0E240000D481B /* NetworkLayerTests.swift */; };
 		1C6F876D25A0E240000D481B /* NetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6F875F25A0E240000D481B /* NetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C6F877D25A0F87E000D481B /* TargetProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F877C25A0F87E000D481B /* TargetProviderTests.swift */; };
+		1C6F878125A0FC72000D481B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F878025A0FC72000D481B /* HTTPClient.swift */; };
+		1C6F878525A0FCB2000D481B /* URLSessionHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +33,8 @@
 		1C6F876A25A0E240000D481B /* NetworkLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLayerTests.swift; sourceTree = "<group>"; };
 		1C6F876C25A0E240000D481B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C6F877C25A0F87E000D481B /* TargetProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetProviderTests.swift; sourceTree = "<group>"; };
+		1C6F878025A0FC72000D481B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHttpClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +79,8 @@
 			children = (
 				1C6F875F25A0E240000D481B /* NetworkLayer.h */,
 				1C6F876025A0E240000D481B /* Info.plist */,
+				1C6F878025A0FC72000D481B /* HTTPClient.swift */,
+				1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */,
 			);
 			path = NetworkLayer;
 			sourceTree = "<group>";
@@ -150,6 +156,7 @@
 				TargetAttributes = {
 					1C6F875B25A0E240000D481B = {
 						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
 					};
 					1C6F876425A0E240000D481B = {
 						CreatedOnToolsVersion = 12.3;
@@ -197,6 +204,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C6F878125A0FC72000D481B /* HTTPClient.swift in Sources */,
+				1C6F878525A0FCB2000D481B /* URLSessionHttpClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +353,7 @@
 		1C6F877125A0E240000D481B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -361,6 +371,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.gustavogervasio.NetworkLayer;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -368,6 +379,7 @@
 		1C6F877225A0E240000D481B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -392,6 +404,7 @@
 		1C6F877425A0E240000D481B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = DZ844YN55M;
@@ -410,6 +423,7 @@
 		1C6F877525A0E240000D481B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = DZ844YN55M;
