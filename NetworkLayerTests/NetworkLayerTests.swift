@@ -1,21 +1,30 @@
 import XCTest
 @testable import NetworkLayer
 
-class URLSessionHttpClient {
+enum HTTPClientResult {
+    case failure(Error)
+    case success(Data, HTTPURLResponse)
+}
+
+protocol HTTPClient {
+
+    func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void)
+}
+
+final class URLSessionHttpClient {
 
     struct UnexpectedValuesRepresentation: Error {}
 
-    enum Result {
-        case failure(Error)
-        case success(Data, HTTPURLResponse)
-    }
-
     private let session: URLSession
+
     init(session: URLSession = .shared) {
         self.session = session
     }
+}
 
-    func get(from url: URL, completion: @escaping (URLSessionHttpClient.Result) -> Void) {
+extension URLSessionHttpClient: HTTPClient {
+
+    func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
 
         session.dataTask(with: url) { (data, response, error) in
 
@@ -29,7 +38,6 @@ class URLSessionHttpClient {
         }.resume()
     }
 }
-
 
 class URLSessionHttpClientTests: XCTestCase {
 
@@ -133,7 +141,7 @@ class URLSessionHttpClientTests: XCTestCase {
 
         URLProtocolStub.stub(data: data, response: response, error: error)
 
-        var receivedResult: URLSessionHttpClient.Result? = nil
+        var receivedResult: HTTPClientResult? = nil
 
         makeSUT().get(from: anyURL()) { result in
             receivedResult = result
@@ -156,7 +164,7 @@ class URLSessionHttpClientTests: XCTestCase {
 
         URLProtocolStub.stub(data: data, response: response, error: error)
 
-        var receivedResult: URLSessionHttpClient.Result? = nil
+        var receivedResult: HTTPClientResult? = nil
 
         makeSUT().get(from: anyURL()) { result in
             receivedResult = result
