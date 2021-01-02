@@ -48,7 +48,7 @@ class TargetProviderTests: XCTestCase {
 
         let (sut, client) = makeSUT()
 
-        let error = NSError(domain: "test", code: 1)
+        let error = anyNSError()
         let result = HTTPClientResult.failure(error)
 
         expect(sut: sut, toCompleteWithResult: result) {
@@ -60,9 +60,8 @@ class TargetProviderTests: XCTestCase {
 
         let (sut, client) = makeSUT()
 
-        let url = URL(string: "https://any-url.com")!
-        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
-        let data = "Any data".data(using: .utf8)!
+        let response = anyHttpURLResponse()
+        let data = anyData()
 
         expect(sut: sut, toCompleteWithResult: HTTPClientResult.success(data, response)) {
             client.complete(with: .success(data, response))
@@ -76,9 +75,20 @@ class TargetProviderTests: XCTestCase {
         return (provider, client)
     }
 
-    private struct TargetSpy: Target {
-        var baseURL: URL { return URL(string: "https://any-url.com")! }
-        var method: Method { return .get }
+    private func anyURL() -> URL {
+        return URL(string: "https://any-url.com")!
+    }
+
+    private func anyNSError() -> NSError {
+        return NSError(domain: "test", code: 1)
+    }
+
+    private func anyData() -> Data {
+        return "Any data".data(using: .utf8)!
+    }
+
+    private func anyHttpURLResponse() -> HTTPURLResponse {
+        return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
 
     private func expect(sut: Provider, toCompleteWithResult expectedResult: HTTPClientResult, when action:() -> Void) {
@@ -94,6 +104,11 @@ class TargetProviderTests: XCTestCase {
         action()
 
         wait(for: [exp], timeout: 1.0)
+    }
+
+    private struct TargetSpy: Target {
+        var baseURL: URL { return URL(string: "https://any-url.com")! }
+        var method: Method { return .get }
     }
 
     private class URLSessionHttpClientSpy: HTTPClient {
