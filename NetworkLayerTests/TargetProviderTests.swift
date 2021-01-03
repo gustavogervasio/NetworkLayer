@@ -29,7 +29,8 @@ class Provider {
     private func get(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
 
         let url = target.baseURL.appendingPathComponent(target.path)
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.allHTTPHeaderFields = target.headers
 
         client.get(from: request) { result in
             completion(result)
@@ -50,6 +51,7 @@ class TargetProviderTests: XCTestCase {
         XCTAssertEqual(client.messages.count, 1)
         XCTAssertEqual(client.messages.first?.request.url, requestedURL)
         XCTAssertEqual(client.messages.first?.request.httpMethod, "GET")
+        XCTAssertEqual(client.messages.first?.request.allHTTPHeaderFields, target.headers)
     }
 
     func test_requestFromTarget_deliversFailureResponse() {
