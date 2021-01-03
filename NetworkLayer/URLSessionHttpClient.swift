@@ -14,6 +14,7 @@ final class URLSessionHttpClient {
     private func createURLRequest(url: URL, method: HTTPClientMethod, headers: [String: String]? = nil) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+        request.allHTTPHeaderFields = headers
         return request
     }
 }

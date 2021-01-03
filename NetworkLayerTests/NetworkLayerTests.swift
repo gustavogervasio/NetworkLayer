@@ -22,6 +22,7 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, request.url)
             XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(request.allHTTPHeaderFields, [:])
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
@@ -36,6 +37,7 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, request.url)
             XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.allHTTPHeaderFields, [:])
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
@@ -50,6 +52,7 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, request.url)
             XCTAssertEqual(request.httpMethod, "PUT")
+            XCTAssertEqual(request.allHTTPHeaderFields, [:])
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
@@ -64,6 +67,22 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, request.url)
             XCTAssertEqual(request.httpMethod, "DELETE")
+            XCTAssertEqual(request.allHTTPHeaderFields, [:])
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_requestFromURL_performsRequestWithHeaders() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
+        let headers = ["new-header": "new-header-value"]
+
+        makeSUT().request(url: url, headers: headers) { _ in }
+
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, request.url)
+            XCTAssertEqual(request.allHTTPHeaderFields, headers)
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
