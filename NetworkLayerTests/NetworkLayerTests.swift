@@ -13,22 +13,35 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.stopInterceptingRequests()
     }
 
-    func test_getFromURL_performsGetRequestWithURL() {
-        let exp = expectation(description: "Wait get completion")
-        let request = anyURLRequest()
+    func test_requestFromURL_performsGetRequestWithURL() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
 
-        makeSUT().get(from: request) { _ in }
+        makeSUT().request(url: url) { _ in }
 
         URLProtocolStub.observeRequests { request in
             XCTAssertEqual(request.url, request.url)
             XCTAssertEqual(request.httpMethod, "GET")
             exp.fulfill()
         }
-
         wait(for: [exp], timeout: 1.0)
     }
 
-    func test_getFromURL_failsOnRequestError() {
+    func test_requestFromURL_performsPostRequestWithURL() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
+
+        makeSUT().request(url: url, method: .post) { _ in }
+
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, request.url)
+            XCTAssertEqual(request.httpMethod, "POST")
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_requestFromURL_failsOnRequestError() {
         let expectedError = anyNSError()
 
         let result = resultErrorFor(data: nil, response: nil, error: expectedError)
@@ -49,7 +62,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: nil))
     }
 
-    func test_getFromURL_succeedsOnHTTPURLResponseWithData() {
+    func test_requestFromURL_succeedsOnHTTPURLResponseWithData() {
         let data = anyData()
         let response = anyHttpURLResponse()
 
@@ -61,7 +74,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(result?.response.statusCode, response.statusCode)
     }
 
-    func test_getFromURL_suceedsWithEmptyDataOnHttpURLResponseWithNilData() {
+    func test_requestFromURL_suceedsWithEmptyDataOnHttpURLResponseWithNilData() {
         let response = anyHttpURLResponse()
 
         let result = resultValuesFor(data: nil, response: anyHttpURLResponse(), error: nil)
@@ -79,10 +92,6 @@ class URLSessionHttpClientTests: XCTestCase {
 
     private func anyURL() -> URL {
         return URL(string: "https://any-url.com")!
-    }
-
-    private func anyURLRequest() -> URLRequest {
-        return URLRequest(url: anyURL())
     }
 
     private func anyNSError() -> NSError {
@@ -109,7 +118,7 @@ class URLSessionHttpClientTests: XCTestCase {
 
         var receivedResult: HTTPClientResult? = nil
 
-        makeSUT().get(from: anyURLRequest()) { result in
+        makeSUT().request(url: anyURL()) { result in
             receivedResult = result
             exp.fulfill()
         }
@@ -132,7 +141,7 @@ class URLSessionHttpClientTests: XCTestCase {
 
         var receivedResult: HTTPClientResult? = nil
 
-        makeSUT().get(from: anyURLRequest()) { result in
+        makeSUT().request(url: anyURL()) { result in
             receivedResult = result
             exp.fulfill()
         }

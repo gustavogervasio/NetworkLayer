@@ -17,5 +17,13 @@ internal enum HTTPClientResult: Equatable {
 }
 
 internal protocol HTTPClient {
-    func get(from url: URLRequest, completion: @escaping (HTTPClientResult) -> Void)
+
+    func request(url: URL, method: HTTPClientMethod, headers: [String: String]?, completion: @escaping (HTTPClientResult) -> Void)
+}
+
+enum HTTPClientMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
 }

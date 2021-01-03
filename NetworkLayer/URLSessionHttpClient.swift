@@ -9,13 +9,24 @@ final class URLSessionHttpClient {
     init(session: URLSession = .shared) {
         self.session = session
     }
+
+    // MARK - Private Methods
+    private func createURLRequest(url: URL, method: HTTPClientMethod, headers: [String: String]? = nil) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        return request
+    }
 }
 
 extension URLSessionHttpClient: HTTPClient {
 
-    func get(from request: URLRequest, completion: @escaping (HTTPClientResult) -> Void) {
+    func request(url: URL,
+                 method: HTTPClientMethod = .get,
+                 headers: [String: String]? = nil,
+                 completion: @escaping (HTTPClientResult) -> Void) {
 
-        session.dataTask(with: request) { (data, response, error) in
+        let urlRequest = createURLRequest(url: url, method: method, headers: headers)
+        session.dataTask(with: urlRequest) { (data, response, error) in
 
             if let error = error {
                 completion(.failure(error))
