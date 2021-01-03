@@ -71,6 +71,21 @@ class TargetProviderTests: XCTestCase {
         return (provider, client)
     }
 
+    private func expect(sut: Provider, toCompleteWithResult expectedResult: HTTPClientResult, when action:() -> Void) {
+
+        let exp = expectation(description: "Wait request completion")
+        let target = TargetSpy()
+
+        sut.request(from: target) { result in
+            XCTAssertEqual(result, expectedResult)
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 1.0)
+    }
+
     private func anyURL() -> URL {
         return URL(string: "https://any-url.com")!
     }
@@ -85,21 +100,6 @@ class TargetProviderTests: XCTestCase {
 
     private func anyHttpURLResponse() -> HTTPURLResponse {
         return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
-    }
-
-    private func expect(sut: Provider, toCompleteWithResult expectedResult: HTTPClientResult, when action:() -> Void) {
-
-        let exp = expectation(description: "Wait request completion")
-        let target = TargetSpy()
-
-        sut.request(from: target) { result in
-            XCTAssertEqual(result, expectedResult)
-            exp.fulfill()
-        }
-
-        action()
-
-        wait(for: [exp], timeout: 1.0)
     }
 
     private struct TargetSpy: Target {
