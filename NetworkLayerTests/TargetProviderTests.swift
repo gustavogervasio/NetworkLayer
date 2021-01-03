@@ -9,6 +9,7 @@ protocol Target {
     var baseURL: URL { get }
     var method: Method { get }
     var path: String { get }
+    var headers: [String: String] { get }
 }
 
 class Provider {
@@ -25,7 +26,11 @@ class Provider {
 
     // MARK: - Private Methods
     private func get(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
-        client.get(from: target.baseURL.appendingPathComponent(target.path)) { result in
+
+        let url = target.baseURL.appendingPathComponent(target.path)
+        let request = URLRequest(url: url)
+
+        client.get(from: request) { result in
             completion(result)
         }
     }
@@ -42,7 +47,7 @@ class TargetProviderTests: XCTestCase {
         sut.request(from: target) { _ in }
 
         XCTAssertEqual(client.messages.count, 1)
-        XCTAssertEqual(client.messages.first?.url, requestedURL)
+        XCTAssertEqual(client.messages.first?.request.url, requestedURL)
         XCTAssertEqual(client.messages.first?.method, .get)
     }
 
@@ -109,6 +114,7 @@ class TargetProviderTests: XCTestCase {
     }
 
     private struct TargetSpy: Target {
+
         var baseURL: URL {
             return URL(string: "https://any-url.com")!
         }
@@ -120,14 +126,18 @@ class TargetProviderTests: XCTestCase {
         var path: String {
             return "any-path"
         }
+
+        var headers: [String : String] {
+            return ["new-header": "new-header-value"]
+        }
     }
 
     private class URLSessionHttpClientSpy: HTTPClient {
 
-        var messages: [(url: URL, method: Method, completion: (HTTPClientResult) -> Void)] = []
+        var messages: [(request: URLRequest, method: Method, completion: (HTTPClientResult) -> Void)] = []
 
-        func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
-            messages.append((url, .get, completion))
+        func get(from request: URLRequest, completion: @escaping (HTTPClientResult) -> Void) {
+            messages.append((request, .get, completion))
         }
 
         func complete(with result: HTTPClientResult, at index: Int = 0) {
