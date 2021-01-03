@@ -41,6 +41,34 @@ class URLSessionHttpClientTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_requestFromURL_performsPutRequestWithURL() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
+
+        makeSUT().request(url: url, method: .put) { _ in }
+
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, request.url)
+            XCTAssertEqual(request.httpMethod, "PUT")
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_requestFromURL_performsDeleteRequestWithURL() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
+
+        makeSUT().request(url: url, method: .delete) { _ in }
+
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, request.url)
+            XCTAssertEqual(request.httpMethod, "DELETE")
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
     func test_requestFromURL_failsOnRequestError() {
         let expectedError = anyNSError()
 
