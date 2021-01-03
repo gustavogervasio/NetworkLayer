@@ -1,30 +1,7 @@
 import XCTest
 @testable import NetworkLayer
 
-protocol Target {
-    var baseURL: URL { get }
-    var method: HTTPClientMethod { get }
-    var path: String { get }
-    var headers: [String: String] { get }
-}
-
-class Provider {
-
-    let client: HTTPClient
-
-    init (client: HTTPClient) {
-        self.client = client
-    }
-
-    func request(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
-        let url = target.baseURL.appendingPathComponent(target.path)
-        client.request(url: url, method: target.method, headers: target.headers) { result in
-            completion(result)
-        }
-    }
-}
-
-class TargetProviderTests: XCTestCase {
+class ProviderTests: XCTestCase {
 
     func test_requestFromTarget_performsGetRequestWithURL() {
 
