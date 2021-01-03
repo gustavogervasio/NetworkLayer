@@ -20,6 +20,7 @@ final class URLSessionHttpClient {
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers
         if let body = body as? [String: String] {
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             let httpBody = try? JSONEncoder().encode(body)
             request.httpBody = httpBody
         }

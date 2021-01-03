@@ -111,13 +111,20 @@ class URLSessionHttpClientTests: XCTestCase {
     func test_requestFromURL_performsRequestWithBody() {
 
         let url = anyURL()
-        let body = ["new-header": "new-header-value"]
+        let body = ["body": "body-value"]
         let json = try? JSONEncoder().encode(body)
 
         let request = requestFor(url: url, method: .post, body: body)
 
         XCTAssertEqual(request.url, url)
         XCTAssertEqual(request.httpBodyStream?.readfully(), json)
+    }
+
+    func test_requestFromURL_withBody_addsContentTypeHeader() {
+
+        let request = requestFor(url: anyURL(), body: ["body": "body-value"])
+
+        XCTAssertEqual(request.allHTTPHeaderFields?["Content-Type"], "application/json")
     }
 
     // MARK: - Helpers
