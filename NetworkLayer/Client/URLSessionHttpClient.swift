@@ -13,11 +13,16 @@ final class URLSessionHttpClient {
     // MARK - Private Methods
     private func createURLRequest(url: URL,
                                   method: HTTPClientMethod,
-                                  headers: [String: String]? = nil) -> URLRequest {
+                                  body: [String: Any]?,
+                                  headers: [String: String]?) -> URLRequest {
 
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.allHTTPHeaderFields = headers
+        if let body = body as? [String: String] {
+            let httpBody = try? JSONEncoder().encode(body)
+            request.httpBody = httpBody
+        }
         return request
     }
 }
@@ -26,10 +31,11 @@ extension URLSessionHttpClient: HTTPClient {
 
     func request(url: URL,
                  method: HTTPClientMethod = .get,
+                 body: [String: Any]? = nil,
                  headers: [String: String]? = nil,
                  completion: @escaping (HTTPClientResult) -> Void) {
 
-        let urlRequest = createURLRequest(url: url, method: method, headers: headers)
+        let urlRequest = createURLRequest(url: url, method: method, body: body, headers: headers)
         session.dataTask(with: urlRequest) { (data, response, error) in
 
             if let error = error {

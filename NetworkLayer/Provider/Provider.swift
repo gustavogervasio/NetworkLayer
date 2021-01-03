@@ -9,7 +9,7 @@ class Provider {
     func request(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
 
         let url = target.baseURL.appendingPathComponent(target.path)
-        client.request(url: url, method: target.method, headers: target.headers) { result in
+        client.request(url: url, method: target.method, body: nil, headers: target.headers) { result in
             completion(result)
         }
     }

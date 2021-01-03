@@ -102,7 +102,12 @@ class ProviderTests: XCTestCase {
 
         var messages: [(url: URL, method: HTTPClientMethod, headers: [String : String]?, completion: (HTTPClientResult) -> Void)] = []
 
-        func request(url: URL, method: HTTPClientMethod, headers: [String : String]?, completion: @escaping (HTTPClientResult) -> Void) {
+        func request(url: URL,
+                     method: HTTPClientMethod,
+                     body: [String : Any]?,
+                     headers: [String : String]?,
+                     completion: @escaping (HTTPClientResult) -> Void) {
+
             messages.append((url, method, headers, completion))
         }
 

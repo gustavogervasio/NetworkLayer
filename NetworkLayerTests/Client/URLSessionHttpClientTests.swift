@@ -88,6 +88,22 @@ class URLSessionHttpClientTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_requestFromURL_performsRequestWithBody() {
+        let exp = expectation(description: "Wait request completion")
+        let url = anyURL()
+        let body = ["new-header": "new-header-value"]
+        let json = try? JSONEncoder().encode(body)
+
+        makeSUT().request(url: url, method: .post, body: body) { _ in }
+
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, request.url)
+            XCTAssertEqual(request.httpBodyStream?.readfully(), json)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
     func test_requestFromURL_failsOnRequestError() {
         let expectedError = anyNSError()
 
@@ -265,3 +281,26 @@ class URLSessionHttpClientTests: XCTestCase {
         override func stopLoading() {}
     }
 }
+
+
+private extension InputStream {
+    func readfully() -> Data {
+        var result = Data()
+        var buffer = [UInt8](repeating: 0, count: 4096)
+
+        open()
+
+        var amount = 0
+        repeat {
+            amount = read(&buffer, maxLength: buffer.count)
+            if amount > 0 {
+                result.append(buffer, count: amount)
+            }
+        } while amount > 0
+
+        close()
+
+        return result
+    }
+}
+
