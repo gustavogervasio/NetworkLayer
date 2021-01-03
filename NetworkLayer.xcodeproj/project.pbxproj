@@ -83,8 +83,8 @@
 			children = (
 				1C6F875F25A0E240000D481B /* NetworkLayer.h */,
 				1C6F876025A0E240000D481B /* Info.plist */,
-				1CECD2C325A2272400F0E81D /* Provider */,
 				1CECD2BF25A2269300F0E81D /* Client */,
+				1CECD2C325A2272400F0E81D /* Provider */,
 			);
 			path = NetworkLayer;
 			sourceTree = "<group>";
