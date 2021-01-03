@@ -13,6 +13,50 @@ class URLSessionHttpClientTests: XCTestCase {
         URLProtocolStub.stopInterceptingRequests()
     }
 
+    func test_requestFromURL_failsOnRequestError() {
+        let expectedError = anyNSError()
+
+        let result = resultErrorFor(data: nil, response: nil, error: expectedError)
+
+        XCTAssertEqual((result as NSError?)?.code, expectedError.code)
+        XCTAssertEqual((result as NSError?)?.domain, expectedError.domain)
+    }
+
+    func test_requestFromURL_failsOnAllInvalidRepresentationCases() {
+        XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: nonHttpURLResponse(), error: nil))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: nonHttpURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: nil, response: anyHttpURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHttpURLResponse(), error: anyNSError()))
+        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: nil))
+    }
+
+    func test_requestFromURL_succeedsOnHTTPURLResponseWithData() {
+        let data = anyData()
+        let response = anyHttpURLResponse()
+
+        let result = resultValuesFor(data: data, response: response, error: nil)
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.data, data)
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
+    }
+
+    func test_requestFromURL_suceedsWithEmptyDataOnHttpURLResponseWithNilData() {
+        let response = anyHttpURLResponse()
+
+        let result = resultValuesFor(data: nil, response: anyHttpURLResponse(), error: nil)
+
+        let emptyData = Data()
+        XCTAssertEqual(result?.data, emptyData)
+        XCTAssertEqual(result?.response.url, response.url)
+        XCTAssertEqual(result?.response.statusCode, response.statusCode)
+    }
+
     func test_requestFromURL_performsGetRequestWithURL() {
 
         let url = anyURL()
@@ -74,50 +118,6 @@ class URLSessionHttpClientTests: XCTestCase {
 
         XCTAssertEqual(request.url, url)
         XCTAssertEqual(request.httpBodyStream?.readfully(), json)
-    }
-
-    func test_requestFromURL_failsOnRequestError() {
-        let expectedError = anyNSError()
-
-        let result = resultErrorFor(data: nil, response: nil, error: expectedError)
-
-        XCTAssertEqual((result as NSError?)?.code, expectedError.code)
-        XCTAssertEqual((result as NSError?)?.domain, expectedError.domain)
-    }
-
-    func test_requestFromURL_failsOnAllInvalidRepresentationCases() {
-        XCTAssertNotNil(resultErrorFor(data: nil, response: nil, error: nil))
-        XCTAssertNotNil(resultErrorFor(data: nil, response: nonHttpURLResponse(), error: nil))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: nil))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nil, error: anyNSError()))
-        XCTAssertNotNil(resultErrorFor(data: nil, response: nonHttpURLResponse(), error: anyNSError()))
-        XCTAssertNotNil(resultErrorFor(data: nil, response: anyHttpURLResponse(), error: anyNSError()))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: anyNSError()))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: anyHttpURLResponse(), error: anyNSError()))
-        XCTAssertNotNil(resultErrorFor(data: anyData(), response: nonHttpURLResponse(), error: nil))
-    }
-
-    func test_requestFromURL_succeedsOnHTTPURLResponseWithData() {
-        let data = anyData()
-        let response = anyHttpURLResponse()
-
-        let result = resultValuesFor(data: data, response: response, error: nil)
-
-        XCTAssertNotNil(result)
-        XCTAssertEqual(result?.data, data)
-        XCTAssertEqual(result?.response.url, response.url)
-        XCTAssertEqual(result?.response.statusCode, response.statusCode)
-    }
-
-    func test_requestFromURL_suceedsWithEmptyDataOnHttpURLResponseWithNilData() {
-        let response = anyHttpURLResponse()
-
-        let result = resultValuesFor(data: nil, response: anyHttpURLResponse(), error: nil)
-
-        let emptyData = Data()
-        XCTAssertEqual(result?.data, emptyData)
-        XCTAssertEqual(result?.response.url, response.url)
-        XCTAssertEqual(result?.response.statusCode, response.statusCode)
     }
 
     // MARK: - Helpers
