@@ -14,94 +14,66 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_requestFromURL_performsGetRequestWithURL() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
+        let request = requestFor(url: anyURL())
 
-        makeSUT().request(url: url) { _ in }
-
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.httpMethod, "GET")
-            XCTAssertEqual(request.allHTTPHeaderFields, [:])
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.httpMethod, "GET")
+        XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
     func test_requestFromURL_performsPostRequestWithURL() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
+        let request = requestFor(url: url, method: .post)
 
-        makeSUT().request(url: url, method: .post) { _ in }
-
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.httpMethod, "POST")
-            XCTAssertEqual(request.allHTTPHeaderFields, [:])
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
     func test_requestFromURL_performsPutRequestWithURL() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
+        let request = requestFor(url: url, method: .put)
 
-        makeSUT().request(url: url, method: .put) { _ in }
-
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.httpMethod, "PUT")
-            XCTAssertEqual(request.allHTTPHeaderFields, [:])
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.httpMethod, "PUT")
+        XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
     func test_requestFromURL_performsDeleteRequestWithURL() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
+        let request = requestFor(url: url, method: .delete)
 
-        makeSUT().request(url: url, method: .delete) { _ in }
-
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.httpMethod, "DELETE")
-            XCTAssertEqual(request.allHTTPHeaderFields, [:])
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.httpMethod, "DELETE")
+        XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
     func test_requestFromURL_performsRequestWithHeaders() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
         let headers = ["new-header": "new-header-value"]
 
-        makeSUT().request(url: url, headers: headers) { _ in }
+        let request = requestFor(url: url, headers: headers)
 
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.allHTTPHeaderFields, headers)
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.allHTTPHeaderFields, headers)
     }
 
     func test_requestFromURL_performsRequestWithBody() {
-        let exp = expectation(description: "Wait request completion")
+
         let url = anyURL()
         let body = ["new-header": "new-header-value"]
         let json = try? JSONEncoder().encode(body)
 
-        makeSUT().request(url: url, method: .post, body: body) { _ in }
+        let request = requestFor(url: url, method: .post, body: body)
 
-        URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, request.url)
-            XCTAssertEqual(request.httpBodyStream?.readfully(), json)
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.httpBodyStream?.readfully(), json)
     }
 
     func test_requestFromURL_failsOnRequestError() {
@@ -162,6 +134,25 @@ class URLSessionHttpClientTests: XCTestCase {
         }()
 
         return URLSessionHttpClient(session: session)
+    }
+
+    private func requestFor(url: URL,
+                            method: HTTPClientMethod = .get,
+                            body: [String: Any]? = nil,
+                            headers: [String: String]? = nil) -> URLRequest {
+
+        let exp = expectation(description: "Wait request completion")
+
+        makeSUT().request(url: url, method: method, body: body, headers: headers) { _ in }
+
+        var observedRequest: URLRequest!
+        URLProtocolStub.observeRequests { request in
+            observedRequest = request
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+
+        return observedRequest
     }
 
     private func anyURL() -> URL {
@@ -292,7 +283,6 @@ class URLSessionHttpClientTests: XCTestCase {
         override func stopLoading() {}
     }
 }
-
 
 private extension InputStream {
     func readfully() -> Data {
