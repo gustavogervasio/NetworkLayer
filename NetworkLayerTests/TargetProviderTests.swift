@@ -25,6 +25,7 @@ class Provider {
     }
 
     // MARK: - Private Methods
+
     private func get(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
 
         let url = target.baseURL.appendingPathComponent(target.path)
@@ -48,7 +49,7 @@ class TargetProviderTests: XCTestCase {
 
         XCTAssertEqual(client.messages.count, 1)
         XCTAssertEqual(client.messages.first?.request.url, requestedURL)
-        XCTAssertEqual(client.messages.first?.method, .get)
+        XCTAssertEqual(client.messages.first?.request.httpMethod, "GET")
     }
 
     func test_requestFromTarget_deliversFailureResponse() {
@@ -134,10 +135,10 @@ class TargetProviderTests: XCTestCase {
 
     private class URLSessionHttpClientSpy: HTTPClient {
 
-        var messages: [(request: URLRequest, method: Method, completion: (HTTPClientResult) -> Void)] = []
+        var messages: [(request: URLRequest, completion: (HTTPClientResult) -> Void)] = []
 
         func get(from request: URLRequest, completion: @escaping (HTTPClientResult) -> Void) {
-            messages.append((request, .get, completion))
+            messages.append((request, completion))
         }
 
         func complete(with result: HTTPClientResult, at index: Int = 0) {
