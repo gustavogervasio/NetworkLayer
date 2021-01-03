@@ -25,16 +25,19 @@ class Provider {
     }
 
     // MARK: - Private Methods
-
     private func get(from target: Target, completion: @escaping (HTTPClientResult) -> Void) {
+        client.get(from: request(from: target)) { result in
+            completion(result)
+        }
+    }
+
+    private func request(from target: Target) -> URLRequest {
 
         let url = target.baseURL.appendingPathComponent(target.path)
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = target.headers
 
-        client.get(from: request) { result in
-            completion(result)
-        }
+        return request
     }
 }
 
