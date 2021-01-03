@@ -150,7 +150,18 @@ class URLSessionHttpClientTests: XCTestCase {
 
     // MARK: - Helpers
     private func makeSUT() -> URLSessionHttpClient {
-        return URLSessionHttpClient()
+
+        let session: URLSession = {
+            let configuration: URLSessionConfiguration = {
+                let configuration = URLSessionConfiguration.ephemeral
+                configuration.protocolClasses = [URLProtocolStub.self]
+                return configuration
+            }()
+            let session = URLSession(configuration: configuration)
+            return session
+        }()
+
+        return URLSessionHttpClient(session: session)
     }
 
     private func anyURL() -> URL {
@@ -287,9 +298,7 @@ private extension InputStream {
     func readfully() -> Data {
         var result = Data()
         var buffer = [UInt8](repeating: 0, count: 4096)
-
         open()
-
         var amount = 0
         repeat {
             amount = read(&buffer, maxLength: buffer.count)
@@ -297,10 +306,7 @@ private extension InputStream {
                 result.append(buffer, count: amount)
             }
         } while amount > 0
-
         close()
-
         return result
     }
 }
-
