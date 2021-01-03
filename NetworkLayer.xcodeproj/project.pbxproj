@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C6F876625A0E240000D481B /* NetworkLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6F875C25A0E240000D481B /* NetworkLayer.framework */; };
-		1C6F876B25A0E240000D481B /* NetworkLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F876A25A0E240000D481B /* NetworkLayerTests.swift */; };
+		1C6F876B25A0E240000D481B /* URLSessionHttpClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F876A25A0E240000D481B /* URLSessionHttpClientTests.swift */; };
 		1C6F876D25A0E240000D481B /* NetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6F875F25A0E240000D481B /* NetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C6F877D25A0F87E000D481B /* TargetProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F877C25A0F87E000D481B /* TargetProviderTests.swift */; };
 		1C6F878125A0FC72000D481B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F878025A0FC72000D481B /* HTTPClient.swift */; };
@@ -30,7 +30,7 @@
 		1C6F875F25A0E240000D481B /* NetworkLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkLayer.h; sourceTree = "<group>"; };
 		1C6F876025A0E240000D481B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C6F876525A0E240000D481B /* NetworkLayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkLayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C6F876A25A0E240000D481B /* NetworkLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLayerTests.swift; sourceTree = "<group>"; };
+		1C6F876A25A0E240000D481B /* URLSessionHttpClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHttpClientTests.swift; sourceTree = "<group>"; };
 		1C6F876C25A0E240000D481B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C6F877C25A0F87E000D481B /* TargetProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetProviderTests.swift; sourceTree = "<group>"; };
 		1C6F878025A0FC72000D481B /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
@@ -79,8 +79,7 @@
 			children = (
 				1C6F875F25A0E240000D481B /* NetworkLayer.h */,
 				1C6F876025A0E240000D481B /* Info.plist */,
-				1C6F878025A0FC72000D481B /* HTTPClient.swift */,
-				1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */,
+				1CECD2BF25A2269300F0E81D /* Client */,
 			);
 			path = NetworkLayer;
 			sourceTree = "<group>";
@@ -88,11 +87,28 @@
 		1C6F876925A0E240000D481B /* NetworkLayerTests */ = {
 			isa = PBXGroup;
 			children = (
-				1C6F876A25A0E240000D481B /* NetworkLayerTests.swift */,
+				1CECD2C025A226AB00F0E81D /* Client */,
 				1C6F877C25A0F87E000D481B /* TargetProviderTests.swift */,
 				1C6F876C25A0E240000D481B /* Info.plist */,
 			);
 			path = NetworkLayerTests;
+			sourceTree = "<group>";
+		};
+		1CECD2BF25A2269300F0E81D /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				1C6F878025A0FC72000D481B /* HTTPClient.swift */,
+				1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		1CECD2C025A226AB00F0E81D /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				1C6F876A25A0E240000D481B /* URLSessionHttpClientTests.swift */,
+			);
+			path = Client;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,7 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C6F876B25A0E240000D481B /* NetworkLayerTests.swift in Sources */,
+				1C6F876B25A0E240000D481B /* URLSessionHttpClientTests.swift in Sources */,
 				1C6F877D25A0F87E000D481B /* TargetProviderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
