@@ -57,7 +57,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(result?.response.statusCode, response.statusCode)
     }
 
-    func test_requestFromURL_performsGetRequestWithURL() {
+    func test_requestFromURL_withoutMethod_performsGetRequest() {
 
         let url = anyURL()
         let request = requestFor(url: anyURL())
@@ -67,7 +67,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
-    func test_requestFromURL_performsPostRequestWithURL() {
+    func test_requestFromURL_withPostMethod_performsPostRequest() {
 
         let url = anyURL()
         let request = requestFor(url: url, method: .post)
@@ -77,7 +77,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
-    func test_requestFromURL_performsPutRequestWithURL() {
+    func test_requestFromURL_withPutMethod_performsPutRequest() {
 
         let url = anyURL()
         let request = requestFor(url: url, method: .put)
@@ -87,7 +87,7 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
-    func test_requestFromURL_performsDeleteRequestWithURL() {
+    func test_requestFromURL_withDeleteMethod_performsDeleteRequest() {
 
         let url = anyURL()
         let request = requestFor(url: url, method: .delete)
@@ -97,26 +97,22 @@ class URLSessionHttpClientTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields, [:])
     }
 
-    func test_requestFromURL_performsRequestWithHeaders() {
+    func test_requestFromURL_withHeader_performsRequest() {
 
-        let url = anyURL()
         let headers = ["new-header": "new-header-value"]
 
-        let request = requestFor(url: url, headers: headers)
+        let request = requestFor(url: anyURL(), headers: headers)
 
-        XCTAssertEqual(request.url, url)
         XCTAssertEqual(request.allHTTPHeaderFields, headers)
     }
 
-    func test_requestFromURL_performsRequestWithBody() {
+    func test_requestFromURL_withBody_performsRequest() {
 
-        let url = anyURL()
         let body = ["body": "body-value"]
         let json = try? JSONEncoder().encode(body)
 
-        let request = requestFor(url: url, method: .post, body: body)
+        let request = requestFor(url: anyURL(), method: .post, body: body)
 
-        XCTAssertEqual(request.url, url)
         XCTAssertEqual(request.httpBodyStream?.readfully(), json)
     }
 
