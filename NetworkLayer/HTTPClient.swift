@@ -18,7 +18,10 @@ internal enum HTTPClientResult: Equatable {
 
 internal protocol HTTPClient {
 
-    func request(url: URL, method: HTTPClientMethod, headers: [String: String]?, completion: @escaping (HTTPClientResult) -> Void)
+    func request(url: URL,
+                 method: HTTPClientMethod,
+                 headers: [String: String]?,
+                 completion: @escaping (HTTPClientResult) -> Void)
 }
 
 enum HTTPClientMethod: String {
