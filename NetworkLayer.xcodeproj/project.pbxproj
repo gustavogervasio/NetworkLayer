@@ -16,6 +16,7 @@
 		1CECD2C525A2273300F0E81D /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CECD2C425A2273300F0E81D /* Provider.swift */; };
 		1CECD2C925A2274D00F0E81D /* Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CECD2C825A2274D00F0E81D /* Target.swift */; };
 		1CECD2D225A2282400F0E81D /* HTTPClientResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CECD2D125A2282400F0E81D /* HTTPClientResult.swift */; };
+		1CECD2D625A2285B00F0E81D /* HTTPClientMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CECD2D525A2285B00F0E81D /* HTTPClientMethod.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +42,7 @@
 		1CECD2C425A2273300F0E81D /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
 		1CECD2C825A2274D00F0E81D /* Target.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Target.swift; sourceTree = "<group>"; };
 		1CECD2D125A2282400F0E81D /* HTTPClientResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientResult.swift; sourceTree = "<group>"; };
+		1CECD2D525A2285B00F0E81D /* HTTPClientMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientMethod.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				1C6F878025A0FC72000D481B /* HTTPClient.swift */,
+				1CECD2D525A2285B00F0E81D /* HTTPClientMethod.swift */,
 				1CECD2D125A2282400F0E81D /* HTTPClientResult.swift */,
 				1C6F878425A0FCB2000D481B /* URLSessionHttpClient.swift */,
 			);
@@ -246,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C6F878125A0FC72000D481B /* HTTPClient.swift in Sources */,
+				1CECD2D625A2285B00F0E81D /* HTTPClientMethod.swift in Sources */,
 				1CECD2D225A2282400F0E81D /* HTTPClientResult.swift in Sources */,
 				1CECD2C525A2273300F0E81D /* Provider.swift in Sources */,
 				1CECD2C925A2274D00F0E81D /* Target.swift in Sources */,
