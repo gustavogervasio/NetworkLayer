@@ -1,6 +1,6 @@
 import Foundation
 
-final class URLSessionHttpClient {
+final class URLSessionHTTPClient {
 
     struct UnexpectedValuesRepresentation: Error {}
 
@@ -28,7 +28,7 @@ final class URLSessionHttpClient {
     }
 }
 
-extension URLSessionHttpClient: HTTPClient {
+extension URLSessionHTTPClient: HTTPClient {
 
     func request(url: URL,
                  method: HTTPClientMethod = .get,

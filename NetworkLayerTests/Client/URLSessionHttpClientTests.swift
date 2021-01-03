@@ -1,7 +1,7 @@
 import XCTest
 @testable import NetworkLayer
 
-class URLSessionHttpClientTests: XCTestCase {
+class URLSessionHTTPClientTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
@@ -124,7 +124,7 @@ class URLSessionHttpClientTests: XCTestCase {
     }
 
     // MARK: - Helpers
-    private func makeSUT() -> URLSessionHttpClient {
+    private func makeSUT() -> URLSessionHTTPClient {
 
         let session: URLSession = {
             let configuration: URLSessionConfiguration = {
@@ -136,7 +136,7 @@ class URLSessionHttpClientTests: XCTestCase {
             return session
         }()
 
-        return URLSessionHttpClient(session: session)
+        return URLSessionHTTPClient(session: session)
     }
 
     private func requestFor(url: URL,
